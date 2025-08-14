@@ -1,0 +1,2 @@
+# iot4dumb
+yes
