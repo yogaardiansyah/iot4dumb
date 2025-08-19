@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Penjelasan interaktif mulai dari komponen elektronika dasar, simulasi gerbang logika visual, hingga konsep Internet of Things (IoT).">
+    <title>Penjelasan Interaktif: Dari Komponen Dasar Hingga IoT</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #007BFF;
+            --secondary-color: #0056b3;
+            --bg-color: #f8f9fa;
+            --text-color: #343a40;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 2.5em;
+        }
+        h2 {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 40px;
+            font-size: 1.8em;
+        }
+        p {
+            text-align: justify;
+        }
+        hr {
+            border: 0;
+            height: 2px;
+            background-color: var(--border-color);
+            margin: 50px 0;
+        }
+        .svg-container {
+            text-align: center;
+            margin: 40px 0;
+            overflow: hidden;
+        }
+
+        /* --- Logic Gates Interactive --- */
+        .gate-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .gate {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fafafa;
+            transition: box-shadow 0.3s;
+        }
+        .gate:hover {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .gate h3 {
+            margin-top: 0;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+        .gate-logic {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 1.2em;
+            font-weight: bold;
+            height: 70px; /* fixed height for alignment */
+        }
+        .inputs-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+        .gate button.gate-input {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            color: var(--primary-color);
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .gate[data-gate="not"] .gate-input { /* For single input gate */
+            align-self: center;
+        }
+        .gate button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .gate-symbol svg {
+            width: 80px;
+            height: 50px;
+        }
+        .gate-symbol path, .gate-symbol circle {
+            stroke: var(--secondary-color);
+            stroke-width: 2.5;
+            fill: none;
+        }
+        .gate-output {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* --- Accordion --- */
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .accordion-button {
+            width: 100%;
+            background-color: #f8f9fa;
+            border: none;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        .accordion-button:hover {
+            background-color: #e9ecef;
+        }
+        .accordion-button::after {
+            content: '+';
+            font-size: 1.5em;
+            color: var(--primary-color);
+            position: absolute;
+            right: 15px;
+            transition: transform 0.3s;
+        }
+        .accordion-button.active::after {
+            transform: rotate(45deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding: 0 15px;
+        }
+        .accordion-content p {
+            padding: 15px 0;
+            margin: 0;
+        }
+
+        /* --- SVG Animation --- */
+        #dataPacket {
+            animation: flow 6s linear infinite;
+        }
+        @keyframes flow {
+            0% { transform: translateX(100px); opacity: 0; }
+            10% { opacity: 1; }
+            30% { transform: translateX(300px); }
+            40% { transform: translateX(300px); }
+            60% { transform: translateX(520px); }
+            70% { transform: translateX(520px); }
+            90% { transform: translateX(710px); }
+            95% { opacity: 1; }
+            100% { transform: translateX(710px); opacity: 0; }
+        }
+        .svg-component {
+             transition: transform 0.3s ease;
+        }
+        .svg-component:hover {
+            transform: scale(1.05);
+        }
+        
+        /* --- Scroll to Top Button --- */
+        #scrollTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, opacity 0.5s;
+        }
+        #scrollTopBtn:hover {
+            background-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Dari Komponen Dasar Hingga Jaringan Cerdas IoT</h1>
+
+        <h2>Dasar-Dasar Elektronika Digital</h2>
+        
+        <h3>1. Gerbang Logika (Logic Gates) - Visual & Interaktif</h3>
+        <p>Gerbang logika adalah blok bangunan sirkuit digital. Klik tombol input (0 atau 1) untuk melihat bagaimana outputnya berubah berdasarkan simbolnya.</p>
+        <div class="gate-container">
+            <!-- AND GATE -->
+            <div class="gate" data-gate="and">
+                <h3>Gerbang AND</h3>
+                <div class="gate-logic">
+                    <div class="inputs-wrapper">
+                        <button class="gate-input">0</button>
+                        <button class="gate-input">0</button>
+                    </div>
+                    <div class="gate-symbol">
+                        <svg viewBox="0 0 80 50">
+                            <path d="M 20 5 L 40 5 C 60 5 60 45 40 45 L 20 45 Z" />
+                        </svg>
+                    </div>
+                    <span>=</span>
+                    <div class="gate-output">0</div>
+                </div>
+            </div>
+            <!-- OR GATE -->
+            <div class="gate" data-gate="or">
+                <h3>Gerbang OR</h3>
+                <div class="gate-logic">
+                    <div class="inputs-wrapper">
+                        <button class="gate-input">0</button>
+                        <button class="gate-input">0</button>
+                    </div>
+                    <div class="gate-symbol">
+                        <svg viewBox="0 0 80 50">
+                            <path d="M 20 5 C 30 10, 30 40, 20 45 L 25 45 C 45 45, 60 25, 60 25 C 60 25, 45 5, 25 5 L 20 5 Z"/>
+                        </svg>
+                    </div>
+                    <span>=</span>
+                    <div class="gate-output">0</div>
+                </div>
+            </div>
+            <!-- NOT GATE -->
+            <div class="gate" data-gate="not">
+                <h3>Gerbang NOT</h3>
+                <div class="gate-logic">
+                    <button class="gate-input">0</button>
+                    <div class="gate-symbol">
+                        <svg viewBox="0 0 80 50">
+                            <path d="M 20 5 L 20 45 L 50 25 Z"/>
+                            <circle cx="55" cy="25" r="5"/>
+                        </svg>
+                    </div>
+                    <span>=</span>
+                    <div class="gate-output">1</div>
+                </div>
+            </div>
+            <!-- XOR GATE -->
+            <div class="gate" data-gate="xor">
+                <h3>Gerbang XOR</h3>
+                <div class="gate-logic">
+                     <div class="inputs-wrapper">
+                        <button class="gate-input">0</button>
+                        <button class="gate-input">0</button>
+                    </div>
+                    <div class="gate-symbol">
+                        <svg viewBox="0 0 80 50">
+                            <path d="M 25 5 C 35 10, 35 40, 25 45 L 30 45 C 50 45, 65 25, 65 25 C 65 25, 50 5, 30 5 L 25 5 Z"/>
+                            <path d="M 20 5 C 30 10, 30 40, 20 45"/>
+                        </svg>
+                    </div>
+                    <span>=</span>
+                    <div class="gate-output">0</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>2. Komponen Elektronika Dasar</h3>
+        <p>Perangkat pintar IoT tersusun dari berbagai komponen elektronika. Klik nama komponen untuk melihat penjelasannya.</p>
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-button">Resistor</button>
+                <div class="accordion-content">
+                    <p>Komponen yang berfungsi untuk menghambat atau membatasi aliran arus listrik dalam suatu rangkaian. Nilai hambatannya diukur dalam Ohm (Ω).</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-button">Kapasitor (Capacitor)</button>
+                <div class="accordion-content">
+                    <p>Berfungsi untuk menyimpan muatan listrik sementara, mirip seperti baterai kecil yang dapat diisi dan dikosongkan dengan sangat cepat. Digunakan untuk menstabilkan tegangan dan memfilter sinyal.</p>
+                </div>
+            </div>
+             <div class="accordion-item">
+                <button class="accordion-button">Transistor</button>
+                <div class="accordion-content">
+                    <p>Dianggap sebagai salah satu penemuan terpenting. Transistor berfungsi sebagai saklar elektronik (menghidupkan/mematikan sinyal) atau sebagai penguat sinyal listrik. Menjadi dasar dari semua mikroprosesor modern.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-button">Dioda (Diode)</button>
+                <div class="accordion-content">
+                    <p>Komponen yang memungkinkan arus listrik mengalir hanya dalam satu arah dan menghambatnya dari arah sebaliknya. Salah satu jenisnya adalah LED (Light Emitting Diode) yang memancarkan cahaya.</p>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <h2>Memasuki Dunia Internet of Things (IoT)</h2>
+
+        <h3>Apa Itu IoT?</h3>
+        <p>
+            <strong>Internet of Things</strong> adalah sebuah konsep di mana berbagai perangkat fisik ditanamkan sensor, perangkat lunak, dan teknologi lainnya untuk terhubung dan saling bertukar data melalui internet. Tujuannya adalah menciptakan dunia yang lebih cerdas dan responsif.
+        </p>
+
+        <h3>Diagram Alur Komponen IoT - Animasi</h3>
+        <div class="svg-container">
+            <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="svgTitle">
+                <title id="svgTitle">Diagram animasi alur komponen IoT dari sensor ke pengguna.</title>
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#007BFF" />
+                    </marker>
+                </defs>
+                <line x1="170" y1="100" x2="225" y2="100" stroke="#007BFF" stroke-width="2" marker-end="url(#arrow)" />
+                <line x1="375" y1="100" x2="430" y2="100" stroke="#007BFF" stroke-width="2" marker-end="url(#arrow)" />
+                <line x1="590" y1="100" x2="655" y2="100" stroke="#007BFF" stroke-width="2" marker-end="url(#arrow)" />
+                <circle id="dataPacket" r="8" cy="100" fill="orange" opacity="0"/>
+                <g transform="translate(100, 100)" class="svg-component">
+                    <rect x="-70" y="-30" width="140" height="60" rx="10" stroke="#007BFF" stroke-width="2" fill="#e7f1fa"/>
+                    <text x="0" y="5" font-family="Roboto, sans-serif" font-size="16" fill="#333" text-anchor="middle">Sensor/Perangkat</text>
+                </g>
+                <g transform="translate(300, 100)" class="svg-component">
+                    <rect x="-75" y="-30" width="150" height="60" rx="10" stroke="#007BFF" stroke-width="2" fill="#e7f1fa"/>
+                    <text x="0" y="5" font-family="Roboto, sans-serif" font-size="16" fill="#333" text-anchor="middle">Gateway/Konektivitas</text>
+                </g>
+                <g transform="translate(520, 100)" class="svg-component">
+                    <path d="M -60 10 C -90 10, -90 -40, -40 -40 C -10 -70, 40 -70, 60 -40 C 90 -40, 90 10, 60 10 Z" stroke="#007BFF" stroke-width="2" fill="#e7f1fa" />
+                    <text x="0" y="-10" font-family="Roboto, sans-serif" font-size="16" fill="#333" text-anchor="middle">Cloud</text>
+                    <text x="0" y="10" font-family="Roboto, sans-serif" font-size="16" fill="#333" text-anchor="middle">Processing</text>
+                </g>
+                <g transform="translate(710, 100)" class="svg-component">
+                    <rect x="-55" y="-30" width="110" height="60" rx="10" stroke="#007BFF" stroke-width="2" fill="#e7f1fa"/>
+                    <text x="0" y="5" font-family="Roboto, sans-serif" font-size="16" fill="#333" text-anchor="middle">Aplikasi/User</text>
+                </g>
+            </svg>
+        </div>
+
+        <h3>Komponen Utama IoT</h3>
+        <ol>
+            <li><strong>Perangkat Pintar (Sensors & Actuators):</strong> Ujung tombak sistem yang mengumpulkan data (sensor) dari lingkungan dan melakukan aksi (aktuator).</li>
+            <li><strong>Konektivitas (Connectivity):</strong> Jaringan seperti Wi-Fi, Bluetooth, atau seluler yang menghubungkan perangkat ke internet, seringkali melalui sebuah gateway.</li>
+            <li><strong>Platform Cloud:</strong> Pusat pengolahan data. Di sinilah data disimpan, dianalisis, dan keputusan cerdas dibuat.</li>
+            <li><strong>Antarmuka Pengguna (User Interface):</strong> Aplikasi atau dasbor tempat pengguna dapat memantau dan mengontrol sistem IoT mereka.</li>
+        </ol>
+
+        <h3>Contoh Penerapan</h3>
+        <ul>
+            <li><strong>Rumah Pintar:</strong> Mengontrol lampu dan AC dari ponsel untuk menghemat energi.</li>
+            <li><strong>Pertanian Pintar:</strong> Sensor kelembapan tanah yang secara otomatis menyalakan irigasi.</li>
+            <li><strong>Kesehatan:</strong> Jam tangan pintar yang memantau detak jantung dan mengirim peringatan jika ada anomali.</li>
+            <li><strong>Transportasi:</strong> Mobil yang bisa mendeteksi kemacetan di depan dan mencari rute alternatif secara otomatis.</li>
+        </ul>
+    </div>
+    
+    <button id="scrollTopBtn" title="Kembali ke atas">▲</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- Interactive Logic Gates ---
+            const gates = document.querySelectorAll('.gate');
+            gates.forEach(gate => {
+                const inputs = gate.querySelectorAll('.gate-input');
+                const outputEl = gate.querySelector('.gate-output');
+                const gateType = gate.dataset.gate;
+
+                inputs.forEach(input => {
+                    input.addEventListener('click', () => {
+                        input.textContent = input.textContent === '0' ? '1' : '0';
+                        input.classList.toggle('active');
+                        updateOutput();
+                    });
+                });
+
+                function updateOutput() {
+                    const inputValues = Array.from(inputs).map(inp => parseInt(inp.textContent));
+                    let outputValue;
+
+                    switch(gateType) {
+                        case 'and':
+                            outputValue = (inputValues[0] && inputValues[1]) ? 1 : 0;
+                            break;
+                        case 'or':
+                            outputValue = (inputValues[0] || inputValues[1]) ? 1 : 0;
+                            break;
+                        case 'not':
+                            outputValue = inputValues[0] ? 0 : 1;
+                            break;
+                        case 'xor':
+                            outputValue = (inputValues[0] !== inputValues[1]) ? 1 : 0;
+                            break;
+                    }
+                    outputEl.textContent = outputValue;
+                }
+            });
+
+            // --- Accordion Logic ---
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    button.classList.toggle('active');
+
+                    if (button.classList.contains('active')) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        content.style.padding = '1px 15px';
+                    } else {
+                        content.style.maxHeight = '0';
+                        content.style.padding = '0 15px';
+                    }
+                });
+            });
+
+            // --- Scroll to Top Button Logic ---
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.onscroll = function() {
+                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                    scrollTopBtn.style.display = "block";
+                } else {
+                    scrollTopBtn.style.display = "none";
+                }
+            };
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+
+        });
+    </script>
+</body>
+</html>
